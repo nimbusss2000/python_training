@@ -11,7 +11,7 @@ class UntitledTestCase(unittest.TestCase):
     def test_add_contact(self):
         wd = self.wd
         self.open_home_page(wd)
-        self.login(wd)
+        self.login(wd, username="admin", password="secret")
         self.create_contact(wd, Contact(firstname='firstname', lastname='lastname', homephone='homephone',
                                         mobilephone='mobilephone', workphone='workphone', fax='fax'))
         self.return_to_home_page(wd)
@@ -48,7 +48,7 @@ class UntitledTestCase(unittest.TestCase):
     def return_to_home_page(self, wd):
         wd.find_element_by_link_text("home page").click()
 
-    def login(self, wd, username="admin", password="secret"):
+    def login(self, wd, username, password):
         wd.find_element_by_name("user").clear()
         wd.find_element_by_name("user").send_keys(username)
         wd.find_element_by_name("pass").click()

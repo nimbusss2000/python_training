@@ -12,9 +12,7 @@ class TestAddGroup(unittest.TestCase):
         self.open_home_page(wd)
         self.login(wd, "admin", "secret")
         self.open_groups_page(wd)
-        self.init_group_creation(wd)
         self.create_group(wd)
-        self.submit_group_creation(wd)
         self.return_to_group_page(wd)
         self.logout(wd)
 

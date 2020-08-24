@@ -36,13 +36,25 @@ class ContactHelper:
     def delete_contact(self):
         wd = self.app.wd
         self.open_contacts_page()
-        # select first group
+        # select first contact
         wd.find_element_by_name('selected[]').click()
         # submit deletion
         wd.find_element_by_css_selector('.left:nth-child(8) > input').click()
         assert wd.switch_to.alert.text == "Delete 1 addresses?"
         wd.switch_to.alert.accept()
 
+    def modify_contact(self):
+        wd = self.app.wd
+        self.open_contacts_page()
+        # select first contact
+        wd.find_element_by_name('selected[]').click()
+        # submit edit
+        wd.find_element_by_xpath("//img[@alt='Edit']").click()
+        wd.find_element_by_name("firstname").click()
+        wd.find_element_by_name("firstname").clear()
+        wd.find_element_by_name("firstname").send_keys("new firstname")
+        wd.find_element_by_xpath("(//input[@name='update'])[2]").click()
+        self.return_to_home_page()
 
     def return_to_home_page(self):
         wd = self.app.wd

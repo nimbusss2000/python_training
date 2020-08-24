@@ -1,4 +1,5 @@
 
+
 class ContactHelper:
 
     def __init__(self, app):
@@ -31,6 +32,17 @@ class ContactHelper:
         # submit_contact_creation
         wd.find_element_by_xpath("(//input[@name='submit'])[2]").click()
         self.return_to_home_page()
+
+    def delete_contact(self):
+        wd = self.app.wd
+        self.open_contacts_page()
+        # select first group
+        wd.find_element_by_name('selected[]').click()
+        # submit deletion
+        wd.find_element_by_css_selector('.left:nth-child(8) > input').click()
+        assert wd.switch_to.alert.text == "Delete 1 addresses?"
+        wd.switch_to.alert.accept()
+
 
     def return_to_home_page(self):
         wd = self.app.wd

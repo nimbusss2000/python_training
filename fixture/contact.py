@@ -19,26 +19,21 @@ class ContactHelper:
         wd = self.app.wd
         wd.find_element_by_name('selected[]').click()
 
-    def fill_contact_form(self, contact):
+    def change_field_value(self, field_name, text):
+        # checking the condition for filling the contact
         wd = self.app.wd
-        wd.find_element_by_name("firstname").click()
-        wd.find_element_by_name("firstname").clear()
-        wd.find_element_by_name("firstname").send_keys(contact.firstname)
-        wd.find_element_by_name("lastname").click()
-        wd.find_element_by_name("lastname").clear()
-        wd.find_element_by_name("lastname").send_keys(contact.lastname)
-        wd.find_element_by_name("home").click()
-        wd.find_element_by_name("home").clear()
-        wd.find_element_by_name("home").send_keys(contact.homephone)
-        wd.find_element_by_name("mobile").click()
-        wd.find_element_by_name("mobile").clear()
-        wd.find_element_by_name("mobile").send_keys(contact.mobilephone)
-        wd.find_element_by_name("work").click()
-        wd.find_element_by_name("work").clear()
-        wd.find_element_by_name("work").send_keys(contact.workphone)
-        wd.find_element_by_name("fax").click()
-        wd.find_element_by_name("fax").clear()
-        wd.find_element_by_name("fax").send_keys(contact.fax)
+        if text is not None:
+            wd.find_element_by_name(field_name).click()
+            wd.find_element_by_name(field_name).clear()
+            wd.find_element_by_name(field_name).send_keys(text)
+
+    def fill_contact_form(self, contact):
+        self.change_field_value('firstname', contact.firstname)
+        self.change_field_value('lastname', contact.lastname)
+        self.change_field_value('home', contact.homephone)
+        self.change_field_value('mobile', contact.mobilephone)
+        self.change_field_value('work', contact.workphone)
+        self.change_field_value('fax', contact.fax)
 
     def delete_contact(self):
         wd = self.app.wd
@@ -66,3 +61,8 @@ class ContactHelper:
     def open_contacts_page(self):
         wd = self.app.wd
         wd.get("http://localhost/addressbook/index.php")
+
+    def count(self):
+        wd = self.app.wd
+        self.open_contacts_page()
+        return len(wd.find_elements_by_name('selected[]'))

@@ -1,4 +1,4 @@
-import re
+
 from model.contact import Contact
 
 class ContactHelper:
@@ -15,6 +15,7 @@ class ContactHelper:
         # submit_contact_creation
         wd.find_element_by_xpath("(//input[@name='submit'])[2]").click()
         self.return_to_home_page()
+        self.contact_cache = None
 
     def select_first_contact(self):
         wd = self.app.wd
@@ -44,6 +45,7 @@ class ContactHelper:
         wd.find_element_by_css_selector('.left:nth-child(8) > input').click()
         assert wd.switch_to.alert.text == "Delete 1 addresses?"
         wd.switch_to.alert.accept()
+        self.contact_cache = None
 
     def modify_contact(self, contact):
         wd = self.app.wd
@@ -54,6 +56,7 @@ class ContactHelper:
         self.fill_contact_form(contact)
         wd.find_element_by_xpath("(//input[@name='update'])[2]").click()
         self.return_to_home_page()
+        self.contact_cache = None
 
     def return_to_home_page(self):
         wd = self.app.wd
@@ -70,17 +73,20 @@ class ContactHelper:
         self.open_contacts_page()
         return len(wd.find_elements_by_name('selected[]'))
 
-    def get_contacts_list(self):
-        wd = self.app.wd
-        self.open_contacts_page()
-        contacts_list = []
-        trs = wd.find_elements_by_css_selector('tr[name="entry"]')[1:]
-        for td in trs:
-            tr = td.find_element_by_css_selector('td[class="center"]')
-            id = tr.find_element_by_name('selected[]').get_attribute('value')
+    contact_cache = None
 
-            td = td.find_elements_by_tag_name('td')
-            firstname = td[2].text
-            lastname = td[1].text
-            contacts_list.append(Contact(id=id, firstname=firstname, lastname=lastname))
-        return contacts_list
+    def get_contacts_list(self):
+        if self.contact_cache is None:
+            wd = self.app.wd
+            self.open_contacts_page()
+            self.contact_cache = []
+            trs = wd.find_elements_by_css_selector('tr[name="entry"]')
+            for td in trs:
+                tr = td.find_element_by_css_selector('td[class="center"]')
+                id = tr.find_element_by_name('selected[]').get_attribute('value')
+
+                td = td.find_elements_by_tag_name('td')
+                firstname = td[2].text
+                lastname = td[1].text
+                self.contact_cache.append(Contact(id=id, firstname=firstname, lastname=lastname))
+        return list(self.contact_cache)

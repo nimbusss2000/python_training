@@ -9,9 +9,9 @@ def test_modify_first_contact(app):
                                        homephone='new_homephone', mobilephone='new_mobilephone',
                                        workphone='new_workphone', fax='new_fax')
     app.contact.modify_contact(cntct)
-    new_contacts = app.contact.get_contacts_list()
-    assert len(old_contacts) == len(new_contacts)
+    assert len(old_contacts) == app.contact.count()
 
+    new_contacts = app.contact.get_contacts_list()
     old_contacts[0] = cntct
     assert sorted(old_contacts, key=Contact.id_or_max) == sorted(new_contacts, key=Contact.id_or_max)
 

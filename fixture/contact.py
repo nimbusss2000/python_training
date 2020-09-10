@@ -21,6 +21,10 @@ class ContactHelper:
         wd = self.app.wd
         wd.find_element_by_name('selected[]').click()
 
+    def select_contact_by_index(self, index):
+        wd = self.app.wd
+        wd.find_elements_by_name('selected[]')[index].click()
+
     def change_field_value(self, field_name, text):
         # checking the condition for filling the contact
         wd = self.app.wd
@@ -38,19 +42,25 @@ class ContactHelper:
         self.change_field_value('fax', contact.fax)
 
     def delete_contact(self):
+        self.delete_contact_by_index(0)
+
+    def delete_contact_by_index(self, index):
         wd = self.app.wd
         self.open_contacts_page()
-        self.select_first_contact()
+        self.select_contact_by_index(index)
         # submit deletion
         wd.find_element_by_css_selector('.left:nth-child(8) > input').click()
         assert wd.switch_to.alert.text == "Delete 1 addresses?"
         wd.switch_to.alert.accept()
         self.contact_cache = None
 
-    def modify_contact(self, contact):
+    def modify_contact(self):
+        self.modify_contact_by_index(0)
+
+    def modify_contact_by_index(self, index, contact):
         wd = self.app.wd
         self.open_contacts_page()
-        self.select_first_contact()
+        self.select_contact_by_index(index)
         # submit edit
         wd.find_element_by_xpath("//img[@alt='Edit']").click()
         self.fill_contact_form(contact)

@@ -144,5 +144,4 @@ class ContactHelper:
         workphone = re.search('W: (.*)', text).group(1)
         fax = re.search('F: (.*)', text).group(1)
 
-
         return Contact(homephone=homephone, mobilephone=mobilephone, workphone=workphone, fax=fax)

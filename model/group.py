@@ -11,10 +11,10 @@ class Group:
     def __repr__(self):
         # сравнение двух тестов с упорядоченными значениями id-имя
 
-        return f'{self.id}, {self.name}'
+        return f'{self.id}, {self.name}, {self.header}, {self.footer}'
 
     def __eq__(self, other):
-        # т.к питон учитывает еще и место в памяти каждого id (оно у всех разное), то нужно сделать сравнения логическим,
+        # т.к питон учитывает еще и место в памяти каждого id (оно у всех разное), то нужно сделать сравнениe логическим,
         # а не физическим
 
         return (self.id is None or other.id is None or self.id == other.id) and self.name == other.name

@@ -19,7 +19,7 @@ class Contact:
         self.address_from_hp = address_from_hp
 
     def __repr__(self):
-        return f'{self.id}, {self.firstname}, {self.lastname}'
+        return f'{self.id}, {self.firstname}, {self.lastname}, {self.mobilephone}, {self.homephone}, {self.workphone}'
 
     def __eq__(self, other):
         return (self.id is None or other.id is None or self.id == other.id)\

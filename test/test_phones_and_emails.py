@@ -1,7 +1,7 @@
 import re
 import random
 
-def test_phones_on_home_page(app):
+def test_info_on_home_page(app):
     contacts = app.contact.get_contacts_list()
     index = random.randrange(len(contacts))
     contact_from_home_page = app.contact.get_contacts_list()[index]
@@ -10,7 +10,6 @@ def test_phones_on_home_page(app):
            merge_phones_like_on_home_page(contact_from_edit_page)
 
     assert contact_from_home_page.all_emails_from_hp == merge_emails_like_on_home_page(contact_from_edit_page)
-
 
 
 def test_phones_on_view_page(app):

@@ -48,7 +48,6 @@ class GroupHelper:
             wd.find_element_by_link_text('groups').click()
 
     def delete_first_group(self):
-        wd = self.app.wd
         self.delete_group_by_index(0)
 
     def delete_group_by_index(self, index):

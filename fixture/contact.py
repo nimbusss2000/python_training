@@ -24,7 +24,11 @@ class ContactHelper:
 
     def select_contact_by_index(self, index):
         wd = self.app.wd
-        wd.find_elements_by_name('selected[]')[index].click()
+        wd.find_elements_by_css('selected[]')[index].click()
+
+    def select_contact_by_id(self, id):
+        wd = self.app.wd
+        wd.find_element_by_css_selector(f'input[value="{id}"').click()
 
     def change_field_value(self, field_name, text):
         # checking the condition for filling the contact
@@ -55,6 +59,16 @@ class ContactHelper:
         wd.switch_to.alert.accept()
         self.contact_cache = None
 
+    def delete_contact_by_id(self, id):
+        wd = self.app.wd
+        self.open_contacts_page()
+        self.select_contact_by_id(id)
+        # submit deletion
+        wd.find_element_by_css_selector('.left:nth-child(8) > input').click()
+        assert wd.switch_to.alert.text == "Delete 1 addresses?"
+        wd.switch_to.alert.accept()
+        self.contact_cache = None
+
     def modify_contact(self):
         self.modify_contact_by_index(0)
 
@@ -63,6 +77,16 @@ class ContactHelper:
         self.open_contacts_page()
         # submit edit
         wd.find_elements_by_xpath("//img[@alt='Edit']")[index].click()
+        self.fill_contact_form(contact)
+        wd.find_element_by_xpath("(//input[@name='update'])[2]").click()
+        self.return_to_home_page()
+        self.contact_cache = None
+
+    def modify_contact_by_id(self, id, contact):
+        wd = self.app.wd
+        self.open_contacts_page()
+        # submit edit
+        wd.find_element_by_css_selector(f'a[href="edit.php?id={id}"]').click()
         self.fill_contact_form(contact)
         wd.find_element_by_xpath("(//input[@name='update'])[2]").click()
         self.return_to_home_page()

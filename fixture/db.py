@@ -24,16 +24,19 @@ class DbFixture:
         return group_list
 
     def get_contact_list(self):
-        contact_list = []
+        s_list = []
         cursor = self.connection.cursor()
         try:
-            cursor.execute('SELECT id, firstname, lastname FROM addressbook WHERE deprecated="0000-00-00 00:00:00"')
-            for row in cursor:
-                (id, firstname, lastname) = row    # так как каждая строка является кортежем, значения присвоятся сразу в 3 переменные
-                contact_list.append(Contact(id=str(id), firstname=firstname, lastname=lastname))
+            cursor.execute('SELECT id, firstname, lastname, middlename, address, home, work, mobile, '
+                           'email, email2, email3  FROM addressbook WHERE deprecated="0000-00-00 00:00:00"')
+            for row in cursor:       # так как каждая строка является кортежем, значения присвоятся сразу в 3 переменные
+                (id, firstname, lastname, middlename, address, home, work, mobile, email1, email2, email3) = row
+                s_list.append(Contact(id=str(id), firstname=firstname, lastname=lastname, homephone=home,
+                                      workphone=work, mobilephone=mobile, address_from_hp=address,
+                                      email1=email1, email2=email2, email3=email3))
         finally:
             cursor.close()
-        return contact_list
+        return s_list
 
     def destroy(self):
         self.connection.close()

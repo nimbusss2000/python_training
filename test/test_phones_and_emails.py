@@ -1,5 +1,12 @@
 import re
 import random
+from model.contact import Contact
+
+
+def test_contact_list(app, db):
+    contact_from_home_page = app.contact.get_contacts_list()
+    contact_from_db = db.get_contact_list()
+    assert sorted(contact_from_home_page, key=Contact.id_or_max) == sorted(contact_from_db, key=Contact.id_or_max)
 
 def test_info_on_home_page(app):
     contacts = app.contact.get_contacts_list()
@@ -10,7 +17,6 @@ def test_info_on_home_page(app):
            merge_phones_like_on_home_page(contact_from_edit_page)
 
     assert contact_from_home_page.all_emails_from_hp == merge_emails_like_on_home_page(contact_from_edit_page)
-
 
 def test_phones_on_view_page(app):
     contact_from_view_page = app.contact.get_contact_from_view_page(0)

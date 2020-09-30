@@ -124,6 +124,7 @@ class ContactHelper:
                 lastname = td[1].text
 
                 all_phones = td[5].text
+
                 all_emails = td[4].text
                 address = td[3].text
                 self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, id=id,

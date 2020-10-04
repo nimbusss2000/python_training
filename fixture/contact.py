@@ -1,6 +1,7 @@
 
 from model.contact import Contact
 import re
+from selenium.webdriver.support.ui import Select
 
 class ContactHelper:
 
@@ -122,15 +123,38 @@ class ContactHelper:
                 td = td.find_elements_by_tag_name('td')
                 firstname = td[2].text
                 lastname = td[1].text
-
                 all_phones = td[5].text
-
                 all_emails = td[4].text
                 address = td[3].text
                 self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, id=id,
                                                   all_phones_from_home_page=all_phones,
                                                   all_emails_from_hp=all_emails,
                                                   address_from_hp=address))
+        return list(self.contact_cache)
+
+    def get_contacts_list_by_id(self, cont_id):
+        if self.contact_cache is None:
+            wd = self.app.wd
+            self.open_contacts_page()
+            self.contact_cache = []
+            # self.select_contact_by_id(id)
+            trs = wd.find_elements_by_css_selector('tr[name="entry"]')
+            for td in trs:
+                tr = td.find_element_by_css_selector('td[class="center"]')
+                id = tr.find_element_by_name('selected[]').get_attribute('value')
+                if id == str(cont_id):
+                    td = td.find_elements_by_tag_name('td')
+                    firstname = td[2].text
+                    lastname = td[1].text
+                    all_phones = td[5].text
+                    all_emails = td[4].text
+                    address = td[3].text
+                    self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, id=id,
+                                                      all_phones_from_home_page=all_phones,
+                                                      all_emails_from_hp=all_emails,
+                                                      address_from_hp=address))
+                else:
+                    continue
         return list(self.contact_cache)
 
     def open_contact_to_edit_by_index(self, index):
@@ -176,3 +200,15 @@ class ContactHelper:
         workphone = re.search('W: (.*)', text).group(1)
         fax = re.search('F: (.*)', text).group(1)
         return Contact(homephone=homephone, mobilephone=mobilephone, workphone=workphone, fax=fax)
+
+    def add_contact_to_group(self,contact_id):
+        wd = self.app.wd
+
+        wd.get(f"http://localhost/addressbook/?group=183")
+        wd.find_element_by_id(f"{contact_id}").click()
+        wd.find_element_by_name("to_group").click()
+        # Select(wd.find_element_by_css_selector(f'value="{contact_id}"'))
+        Select(wd.find_element_by_name("to_group")).select_by_visible_text("Power of 3")
+        wd.find_element_by_name("to_group").click()
+        wd.find_element_by_name("add").click()
+        # wd.find_element_by_link_text(f'a[href="./?group={contact_id}"').click()

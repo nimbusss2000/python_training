@@ -1,7 +1,8 @@
 
 from model.contact import Contact
 import re
-from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.by import By
+
 
 class ContactHelper:
 
@@ -137,7 +138,6 @@ class ContactHelper:
             wd = self.app.wd
             self.open_contacts_page()
             self.contact_cache = []
-            # self.select_contact_by_id(id)
             trs = wd.find_elements_by_css_selector('tr[name="entry"]')
             for td in trs:
                 tr = td.find_element_by_css_selector('td[class="center"]')
@@ -177,6 +177,7 @@ class ContactHelper:
         firstname = wd.find_element_by_name('firstname').get_attribute('value')
         lastname = wd.find_element_by_name('lastname').get_attribute('value')
         id = wd.find_element_by_name('id').get_attribute('value')
+
         homephone = wd.find_element_by_name('home').get_attribute('value')
         mobilephone = wd.find_element_by_name('mobile').get_attribute('value')
         workphone = wd.find_element_by_name('work').get_attribute('value')
@@ -201,14 +202,19 @@ class ContactHelper:
         fax = re.search('F: (.*)', text).group(1)
         return Contact(homephone=homephone, mobilephone=mobilephone, workphone=workphone, fax=fax)
 
-    def add_contact_to_group(self,contact_id):
+    def add_contact_to_group(self, contact_id, group_id):
         wd = self.app.wd
-
-        wd.get(f"http://localhost/addressbook/?group=183")
-        wd.find_element_by_id(f"{contact_id}").click()
+        wd.get("http://localhost/addressbook/")
+        wd.find_element_by_id(contact_id).click()
         wd.find_element_by_name("to_group").click()
-        # Select(wd.find_element_by_css_selector(f'value="{contact_id}"'))
-        Select(wd.find_element_by_name("to_group")).select_by_visible_text("Power of 3")
+        dropdown = wd.find_element_by_name("to_group")
+        dropdown.find_element_by_css_selector(f"option[value='{group_id}']").click()
         wd.find_element_by_name("to_group").click()
         wd.find_element_by_name("add").click()
-        # wd.find_element_by_link_text(f'a[href="./?group={contact_id}"').click()
+
+    def remove_contact_from_group(self, contact_id, group_id):
+        wd = self.app.wd
+        wd.get(f'http://localhost/addressbook/?group={group_id}')
+        wd.find_element_by_id(contact_id).click()
+        wd.find_element_by_name("remove").click()
+

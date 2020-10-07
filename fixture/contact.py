@@ -1,13 +1,13 @@
 
 from model.contact import Contact
 import re
-from selenium.webdriver.common.by import By
 
 
 class ContactHelper:
 
     def __init__(self, app):
         self.app = app
+
 
     def create_contact(self, contact):
         wd = self.app.wd
@@ -20,17 +20,21 @@ class ContactHelper:
         self.return_to_home_page()
         self.contact_cache = None
 
+
     def select_first_contact(self):
         wd = self.app.wd
         wd.find_element_by_name('selected[]').click()
+
 
     def select_contact_by_index(self, index):
         wd = self.app.wd
         wd.find_elements_by_css('selected[]')[index].click()
 
+
     def select_contact_by_id(self, id):
         wd = self.app.wd
         wd.find_element_by_css_selector(f'input[value="{id}"').click()
+
 
     def change_field_value(self, field_name, text):
         # checking the condition for filling the contact
@@ -40,6 +44,7 @@ class ContactHelper:
             wd.find_element_by_name(field_name).clear()
             wd.find_element_by_name(field_name).send_keys(text)
 
+
     def fill_contact_form(self, contact):
         self.change_field_value('firstname', contact.firstname)
         self.change_field_value('lastname', contact.lastname)
@@ -48,8 +53,10 @@ class ContactHelper:
         self.change_field_value('work', contact.workphone)
         self.change_field_value('fax', contact.fax)
 
+
     def delete_contact(self):
         self.delete_contact_by_index(0)
+
 
     def delete_contact_by_index(self, index):
         wd = self.app.wd
@@ -61,6 +68,7 @@ class ContactHelper:
         wd.switch_to.alert.accept()
         self.contact_cache = None
 
+
     def delete_contact_by_id(self, id):
         wd = self.app.wd
         self.open_contacts_page()
@@ -71,8 +79,10 @@ class ContactHelper:
         wd.switch_to.alert.accept()
         self.contact_cache = None
 
+
     def modify_contact(self):
         self.modify_contact_by_index(0)
+
 
     def modify_contact_by_index(self, index, contact):
         wd = self.app.wd
@@ -84,6 +94,7 @@ class ContactHelper:
         self.return_to_home_page()
         self.contact_cache = None
 
+
     def modify_contact_by_id(self, id, contact):
         wd = self.app.wd
         self.open_contacts_page()
@@ -94,15 +105,18 @@ class ContactHelper:
         self.return_to_home_page()
         self.contact_cache = None
 
+
     def return_to_home_page(self):
         wd = self.app.wd
         if not (wd.current_url.endswith('index.php') and len(wd.find_elements_by_name('add')) > 0):
             wd.find_element_by_link_text("home page").click()
 
+
     def open_contacts_page(self):
         wd = self.app.wd
         if not (wd.current_url.endswith('index.php') and len(wd.find_elements_by_name('add')) > 0):
             wd.get("http://localhost/addressbook/index.php")
+
 
     def count(self):
         wd = self.app.wd
@@ -110,6 +124,7 @@ class ContactHelper:
         return len(wd.find_elements_by_name('selected[]'))
 
     contact_cache = None
+
 
     def get_contacts_list(self):
         if self.contact_cache is None:
@@ -133,29 +148,48 @@ class ContactHelper:
                                                   address_from_hp=address))
         return list(self.contact_cache)
 
-    def get_contacts_list_by_id(self, cont_id):
-        if self.contact_cache is None:
-            wd = self.app.wd
-            self.open_contacts_page()
-            self.contact_cache = []
-            trs = wd.find_elements_by_css_selector('tr[name="entry"]')
-            for td in trs:
-                tr = td.find_element_by_css_selector('td[class="center"]')
-                id = tr.find_element_by_name('selected[]').get_attribute('value')
-                if id == str(cont_id):
-                    td = td.find_elements_by_tag_name('td')
-                    firstname = td[2].text
-                    lastname = td[1].text
-                    all_phones = td[5].text
-                    all_emails = td[4].text
-                    address = td[3].text
-                    self.contact_cache.append(Contact(firstname=firstname, lastname=lastname, id=id,
-                                                      all_phones_from_home_page=all_phones,
-                                                      all_emails_from_hp=all_emails,
-                                                      address_from_hp=address))
-                else:
-                    continue
-        return list(self.contact_cache)
+
+    def get_info_all_phones(self):
+        wd = self.app.wd
+        self.open_contacts_page()
+        phones = []
+        trs = wd.find_elements_by_css_selector('tr[name="entry"]')
+        for td in trs:
+            tr = td.find_element_by_css_selector('td[class="center"]')
+            id = tr.find_element_by_name('selected[]').get_attribute('value')
+            td = td.find_elements_by_tag_name('td')
+            firstname = td[2].text
+            lastname = td[1].text
+            all_phones = td[5].text
+            all_emails = td[4].text
+            address = td[3].text
+            phones.append(Contact(firstname=firstname, lastname=lastname, id=id,
+                                              all_phones_from_home_page=all_phones,
+                                              all_emails_from_hp=all_emails,
+                                              address_from_hp=address).all_phones_from_home_page)
+        return phones
+
+
+    def get_info_all_emails(self):
+        wd = self.app.wd
+        self.open_contacts_page()
+        emails = []
+        trs = wd.find_elements_by_css_selector('tr[name="entry"]')
+        for td in trs:
+            tr = td.find_element_by_css_selector('td[class="center"]')
+            id = tr.find_element_by_name('selected[]').get_attribute('value')
+            td = td.find_elements_by_tag_name('td')
+            firstname = td[2].text
+            lastname = td[1].text
+            all_phones = td[5].text
+            all_emails = td[4].text
+            address = td[3].text
+            emails.append(Contact(firstname=firstname, lastname=lastname, id=id,
+                                              all_phones_from_home_page=all_phones,
+                                              all_emails_from_hp=all_emails,
+                                              address_from_hp=address).all_emails_from_hp)
+        return emails
+
 
     def open_contact_to_edit_by_index(self, index):
         wd = self.app.wd
@@ -164,12 +198,14 @@ class ContactHelper:
         td = tds.find_elements_by_tag_name('td')[7]
         td.find_element_by_tag_name('a').click()
 
+
     def open_contact_to_view_by_index(self, index):
         wd = self.app.wd
         self.open_contacts_page()
         tds = wd.find_elements_by_css_selector('tr[name="entry"]')[index]
         td = tds.find_elements_by_tag_name('td')[6]
         td.find_element_by_tag_name('a').click()
+
 
     def get_contact_info_from_edit_page(self, index):
         wd = self.app.wd
@@ -192,6 +228,7 @@ class ContactHelper:
                        mobilephone=mobilephone, workphone=workphone, fax=fax,
                        email1=email1, email2=email2, email3=email3, address_from_hp=address)
 
+
     def get_contact_from_view_page(self, index):
         wd = self.app.wd
         self.open_contact_to_view_by_index(index)
@@ -202,6 +239,7 @@ class ContactHelper:
         fax = re.search('F: (.*)', text).group(1)
         return Contact(homephone=homephone, mobilephone=mobilephone, workphone=workphone, fax=fax)
 
+
     def add_contact_to_group(self, contact_id, group_id):
         wd = self.app.wd
         wd.get("http://localhost/addressbook/")
@@ -211,6 +249,7 @@ class ContactHelper:
         dropdown.find_element_by_css_selector(f"option[value='{group_id}']").click()
         wd.find_element_by_name("to_group").click()
         wd.find_element_by_name("add").click()
+
 
     def remove_contact_from_group(self, contact_id, group_id):
         wd = self.app.wd

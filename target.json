@@ -1,0 +1,20 @@
+{
+  "web": {
+  "baseUrl": "http://localhost/addressbook/group.php",
+  "username": "admin",
+  "password": "secret",
+  "hostip": "127.0.0.1"
+  },
+  "db": {
+    "host": "localhost",
+    "name": "addressbook",
+    "user": "root",
+    "password": ""
+  },
+  "orm": {
+    "host": "127.0.0.1",
+    "database": "addressbook",
+    "user": "root",
+    "password": ""
+  }
+}

@@ -30,3 +30,4 @@ urllib3
 zipp
 lxml
 allure-pytest
+robotframework-python3
